@@ -1,0 +1,62 @@
+
+      <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">IMG Vending Machine</h1>
+        </div>
+        <div class="col-md-9">
+          <div class="col-md-4 thumb">
+            <a class="thumbnail mylink" href="javacsript:void(0)" onClick="buyItem('cola')" >
+              <img class="img-responsive" src="./img/cocke.png" alt="">
+            <span class="text-center">[1.] $1.00 cola</span>
+            </a>
+
+          </div>
+          <div class="col-md-4 thumb">
+            <a class="thumbnail mylink" href="javacsript:void(0)" onClick="buyItem('chips')" >
+              <img class="img-responsive" src="./img/chips.png" alt="">
+              2. $0.50 chips
+            </a>
+          </div>
+          <div class="col-md-4 thumb">
+            <a class="thumbnail mylink" href="javacsript:void(0)" onClick="buyItem('candy')"  >
+              <img class="img-responsive" src="./img/candy.png" alt="">
+              3. $0.65 candy
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row ">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                    <div class="form-group">
+                        <input id="displayMessage" type="text" class="form-control" value="INSERT COIN" readonly="true" />
+                    </div>
+                  <div class="col-md-12">
+                    <h4 style="display:block">Please select</h4>
+                  </div>
+                  <div style="margin-top:10px;" class="text-center">
+                    <button class="btn btn-default"  ng-repeat="product in main.products" ng-click="main.buyItem(product)" >{{product.name}}</button>
+                  </div>
+                  <div class="col-md-12">
+                    <h4 style="display:block">Coins</h4>
+
+                  <div class="row" style="margin-bottom:20px;" >
+                    <div style="margin-top:10px;" class="text-center">
+                      <button class="btn btn-default " ng-repeat="coin in main.coins" ng-click="main.insertCoin(coin)"  >${{coin.value}}</button>
+                    </div>
+                  </div>
+                  </div>
+                      <div class="form-group">
+                    <input  type="button" class="btn btn-primary btn-block" value="Return Coins" ng-click="main.returnCoin()" />
+                  </div>
+                  <div class="col-md-12">
+                    <h4 style="display:block">Coins Returns{{main.awesomeThings[0]}}</h4>
+                  </div>
+                  <div class="form-group">
+                      <input id="returnBox" type="text" class="form-control" value=""  readonly="true" />
+                  </div>
+                </div>
+             </div>
+           </div>
+        </div>
