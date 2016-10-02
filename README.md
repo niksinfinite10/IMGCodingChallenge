@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # imgcodding-challange
 
 This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
@@ -10,3 +11,7 @@ Run `grunt` for building and `grunt serve` for preview.
 ## Testing
 
 Running `grunt test` will run the unit tests with karma.
+=======
+# IMGcodingchallenge
+Angular js codingChallenge
+>>>>>>> 7f0081d03aae5fc87f704b96132b74efc965be12

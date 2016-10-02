@@ -9,61 +9,64 @@
  */
 angular.module('imgcoddingChallangeApp')
 .factory('vendingMachine', function() {
+	let products = [
+			{
+				 "name":"cola",
+				 "price":1.00,
+				 "qty":10
+			},
+			{
+				 "name":"chips",
+				 "price":0.50,
+				 "qty":10
+			},
+			{
+				 "name":"candy",
+				 "price":0.65,
+				 "qty":10
+			}
+	 ];
+
+	 let availableCoins = [{"name":0.25,"qty":10},{"name":0.10,"qty":10},{"name":0.05,"qty":10}];
+
 	return {
-    getValidCoins:function(){
-      return {nickel:{value:0.05,weight:5.00,diameter:21.21},
-              dime:{value:0.10,weight:2.26,diameter:17.91},
-              quarter:{value:0.25,weight:5.67,diameter:24.26}};
+    getAvailableCoins:function(){
+			let result = [];
+			for(let coin in availableCoins){
+				if(availableCoins[coin].qty>0)
+						result.push(availableCoins[coin].name*100);
+			}
+			return result;
     },
 
     getProducts:function(){
-       return [
-           {
-              "name":"cola",
-              "price":1.00,
-              "qty":10
-           },
-           {
-              "name":"chips",
-              "price":0.50,
-              "qty":10
-           },
-           {
-              "name":"candy",
-              "price":0.65,
-              "qty":10
-           }
-        ];
+       return products;
     },
-
 
 		getSlotPrices: function() {
 			// todo : read slot prices from file
 			return [0.8, 0.9, 1.2, 1, 1.5];
 		},
 		dispenseProduct: function(product) {
-			// todo : send message to machine to dispense product
-      let products = this.getProducts;
-      for(item in  products){
-        if(products[item].name  === product.name){
-            products[item].qty =products[item].qty - 1;
+			let products = this.getProducts();
+			let result = false;
+			for(let item in  products){
+			  if(products[item].name  === product.name && products[item].qty > 0 ){
+            products[item].qty = products[item].qty - 1;
+						result = true;
             break;
-        }else{
-          console.log('no ');
         }
-
-      }
-        // console.log('-->despence'+product.name,this.getProducts);
-			// return (slot !== 1);
-      return true;
+			}
+      return result;
 		},
+
 		dispenseCoin: function(value) {
 			// todo : send message to machine to dispense coin
 			return true;
 		}
 	};
 })
-  .controller('MainCtrl', ['$filter','$timeout','$scope','vendingMachine',function ($timeout,$filter,$scope,vendingMachine) {
+  .controller('MainCtrl', ['$filter','$scope','$timeout','vendingMachine',function ($filter,$scope,$timeout,vendingMachine) {
 
     this.coins = [{name:'nickel',value:0.05,weight:5.00,diameter:21.21},
                 {name:'dime',value:0.10,weight:2.26,diameter:17.91},
@@ -72,37 +75,35 @@ angular.module('imgcoddingChallangeApp')
                 {name:'half',value:0.50,weight:30.61,diameter:11.34},
                 {name:'dollar',value:1.00,weight:8.10,diameter:26.50}];
 
-    this.validCoins = vendingMachine.getValidCoins();
+    this.availableCoins = vendingMachine.getAvailableCoins;
     this.products = vendingMachine.getProducts();
-    this.desp
+    $scope.status = "Inser Coin";
     $scope.credit = 0;
     this.change = 0;
 
 
 
-    this.buyItem = function (item){
+    this.buyItem = function (product){
+			 let products = this.products;
+			 let isDespenseProduct = vendingMachine.dispenseProduct(product);
+			 if(isDespenseProduct){
+				 if($scope.credit >= product.price)
+				 {
+						decrementCredit(product.price);
+						let change = getChange(this.availableCoins(),$scope.credit);
+						console.log('this is the change','25 * '+change[0]+"- 10 * "+change[1]+"- 5 * "+change[2]);
+				 }
+				 else{
+					 	console.log('no sufficiant balance');
+				 }
 
-      let products = this.products;
-      for(item in products){
-        if(products[item].qty>0){
-          console.log('item is available');
-          vendingMachine.dispenseProduct(products[item]);
-          console.log('products qty',products[item].qty);
-          if($scope.credit >= products[item].price){
-            console.log('you can buy it');
-
-          }
-          else
-            console.log('you cant buy this');
-
-          break ;
-        }
-        else{
-          console.log('item is not available11');
-        }
-      }
-
+			 }
+			 else{
+				 console.log('product not available');
+			 }
+			 flashStatus(product.name+' Dispensed');
     }
+
 
     this.insertCoin = function(coin){
       // console.log('inserted coin',coin.value);
@@ -113,10 +114,28 @@ angular.module('imgcoddingChallangeApp')
         // console.log('coin is returning',$scope.credit);
     }
 
+		function getChange(availableCoins,amount){
+			amount = amount*100;
+			var i = 0,
+					coincount = availableCoins.map(function () { return 0; }); // returns an array and for each element of coins zero
+			while (i < availableCoins.length) {
+					while (availableCoins[i] <= amount) {
+							amount -= availableCoins[i];
+							coincount[i]++;
+					}
+					i++;
+			}
+			return coincount;
+		}
+
     function incrementCredit(value) {
       $scope.credit += value;
       roundTwoDecimals();
     }
+		function decrementCredit(value){
+			$scope.credit -= value;
+      roundTwoDecimals();
+		}
 
     function hasSufficientCredit(price) {
       if ($scope.credit >= price) return true;
@@ -125,6 +144,7 @@ angular.module('imgcoddingChallangeApp')
 
     function roundTwoDecimals() {
       // Round to two decimal places to avoid floating point weirdness.
+			// console.log('this is the round decimal',$scope.credit);
       $scope.credit = Math.round($scope.credit * 100) / 100;
     }
     function flashPrice(price) {
@@ -133,7 +153,8 @@ angular.module('imgcoddingChallangeApp')
 
     function flashStatus(message) {
       $scope.status = message;
-      $timeout(function() { $scope.status = ""; }, 1000);
-    }
+      $timeout(function(){ $scope.status = "Insert Coin";}, 2000);
+
+		}
 
   }]);
