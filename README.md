@@ -9,6 +9,8 @@ This project is sample Angular JS project for Vending machine you can easily clo
 
 `npm install`
 
+`grunt serve`
+
 This project is created by [nikhil surti](https://github.com/niksinfinite10).
 
 ## Build & development
