@@ -99,17 +99,13 @@ angular.module('imgcoddingChallangeApp')
 						flashStatus('THANK YOU','INSERT COIN');
 				 }
 				 else{
-
-						flashStatus('INSERT COIN',$scope.credit);
+					 flashStatus('INSERT COIN',$scope.credit);
 				 }
-
 			 }
 			 else{
-
-				 flashStatus("SOLD OUT",$scope.credit);
+				 flashStatus("SOLD OUT",$scope.credit+" ");
 			 }
-
-    }
+		 }
 
 
     this.insertCoin = function(coin){
@@ -161,17 +157,11 @@ angular.module('imgcoddingChallangeApp')
       roundTwoDecimals();
 		}
 
-    function hasSufficientCredit(price) {
-      if ($scope.credit >= price) return true;
-      flashPrice(price); return false;
-    }
+
 
     function roundTwoDecimals() {
       // Round to two decimal places to avoid floating point weirdness.
       $scope.credit = Math.round($scope.credit * 100) / 100;
-    }
-    function flashPrice(price) {
-      flashStatus($filter('currency')($scope.credit, "$"));
     }
 
     function flashStatus(message,defaultMsg) {
