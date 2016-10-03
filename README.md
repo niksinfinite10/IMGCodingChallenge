@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 # imgcodding-challange
 
-This project is for sample vending machine you can easily clone the repository from (git clone https://github.com/niksinfinite10/IMGCodingChallenge)
+This project is for sample vending machine you can easily clone the repository from `git clone https://github.com/niksinfinite10/IMGCodingChallenge`
 
 This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
 version 0.15.1.
