@@ -27,9 +27,12 @@ angular.module('imgcoddingChallangeApp')
 			}
 	 ];
 
-	 let availableCoins = [{"name":0.25,"qty":10},{"name":0.10,"qty":10},{"name":0.05,"qty":10}];
+	 let availableCoins = [{"name":0.25,"qty":10,weight:5.67,diameter:24.26},{"name":0.10,"qty":10,weight:2.26,diameter:17.91},{"name":0.05,"qty":10,weight:5.00,diameter:21.21}];
 
 	return {
+		getValidCoin:function(){
+			return availableCoins;
+		},
     getAvailableCoins:function(){
 			let result = [];
 			for(let coin in availableCoins){
@@ -76,9 +79,11 @@ angular.module('imgcoddingChallangeApp')
                 {name:'dollar',value:1.00,weight:8.10,diameter:26.50}];
 
     this.availableCoins = vendingMachine.getAvailableCoins;
+		this.validCoin  = vendingMachine.getValidCoin();
     this.products = vendingMachine.getProducts();
-    $scope.status = "Inser Coin";
+    $scope.status = "";
     $scope.credit = 0;
+		$scope.returnMsg = "";
     this.change = 0;
 
 
@@ -90,31 +95,49 @@ angular.module('imgcoddingChallangeApp')
 				 if($scope.credit >= product.price)
 				 {
 						decrementCredit(product.price);
-						let change = getChange(this.availableCoins(),$scope.credit);
-						console.log('this is the change','25 * '+change[0]+"- 10 * "+change[1]+"- 5 * "+change[2]);
+						this.returnCoin();
+						flashStatus('THANK YOU','INSERT COIN');
 				 }
 				 else{
-					 	console.log('no sufficiant balance');
+
+						flashStatus('INSERT COIN',$scope.credit);
 				 }
 
 			 }
 			 else{
-				 console.log('product not available');
+
+				 flashStatus("SOLD OUT",$scope.credit);
 			 }
-			 flashStatus(product.name+' Dispensed');
+
     }
 
 
     this.insertCoin = function(coin){
-      // console.log('inserted coin',coin.value);
-      incrementCredit(coin.value);
-    }
+			let err = undefined;
+			for(let vCoin in this.validCoin){
+					vCoin = this.validCoin[vCoin];
+				if(coin.value == vCoin.name && coin.weight == vCoin.weight ){
+							incrementCredit(coin.value);
+							flashStatus($scope.credit);
+							err = undefined;
+							break;
+				}
+				else {
+					err = "INSERT COIN";
+				}
+			}
+			if(err)
+				flashStatus(err,$scope.credit);
+		}
 
     this.returnCoin  = function(){
-        // console.log('coin is returning',$scope.credit);
-    }
+        let change = returnChange(this.availableCoins(),$scope.credit);
+				$scope.credit = 0;
+				flashCoinreturn(change);
+				flashStatus("INSERT COIN");
+			}
 
-		function getChange(availableCoins,amount){
+		function returnChange(availableCoins,amount){
 			amount = amount*100;
 			var i = 0,
 					coincount = availableCoins.map(function () { return 0; }); // returns an array and for each element of coins zero
@@ -125,7 +148,8 @@ angular.module('imgcoddingChallangeApp')
 					}
 					i++;
 			}
-			return coincount;
+			let result = '(25 x '+coincount[0]+") (10 x "+coincount[1]+") (5 x "+coincount[2]+")";
+			return result;
 		}
 
     function incrementCredit(value) {
@@ -144,17 +168,23 @@ angular.module('imgcoddingChallangeApp')
 
     function roundTwoDecimals() {
       // Round to two decimal places to avoid floating point weirdness.
-			// console.log('this is the round decimal',$scope.credit);
       $scope.credit = Math.round($scope.credit * 100) / 100;
     }
     function flashPrice(price) {
-      flashStatus($filter('currency')(price, "€"));
+      flashStatus($filter('currency')($scope.credit, "$"));
     }
 
-    function flashStatus(message) {
+    function flashStatus(message,defaultMsg) {
       $scope.status = message;
-      $timeout(function(){ $scope.status = "Insert Coin";}, 2000);
+			if(defaultMsg)
+      	$timeout(function(){ $scope.status = defaultMsg;}, 1000);
+		}
 
+
+
+		function flashCoinreturn(message) {
+			$scope.returnMsg = message;
+			$timeout(function(){ $scope.returnMsg = "";}, 1000);
 		}
 
   }]);
