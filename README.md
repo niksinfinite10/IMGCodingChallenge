@@ -4,6 +4,10 @@
 This project is sample Angular JS project for Vending machine you can easily clone the repository from
 `git clone https://github.com/niksinfinite10/IMGCodingChallenge`
 
+`cd IMGCodingChallenge`
+
+`npm install`
+
 This project is created by [nikhil surti](https://github.com/niksinfinite10).
 
 ## Build & development
