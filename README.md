@@ -2,6 +2,7 @@
 # IMGCoding-Challenge
 
 This project is sample Angular JS project for Vending machine you can easily clone the repository from
+
 `git clone https://github.com/niksinfinite10/IMGCodingChallenge`
 
 `cd IMGCodingChallenge`
